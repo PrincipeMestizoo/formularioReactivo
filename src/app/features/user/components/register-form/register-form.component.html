@@ -1,0 +1,102 @@
+<form [formGroup]="form">
+  <h2>Crear cuenta</h2>
+
+  <div class="form-group">
+    <label for="name">Nombre Completo</label>
+    <input formControlName="name" id="name" type="text" placeholder="Ingrese su nombre">
+
+    <small *ngIf="isInvalid('name', 'required')" class="error">
+      El nombre es obligatorio.
+    </small>
+
+    <small *ngIf="isInvalid('name', 'minlength')" class="error">
+      El nombre debe tener al menos 2 caracteres.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="email">Correo electrónico</label>
+    <input formControlName="email" id="email" type="email" placeholder="correo@ejemplo.com">
+
+    <small *ngIf="isInvalid('email', 'required')" class="error">
+      El correo electrónico es obligatorio.
+    </small>
+
+    <small *ngIf="isInvalid('email', 'email')" class="error">
+      Ingrese un correo electrónico válido.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="username">Nombre de usuario:</label>
+    <input formControlName="username" id="username" type="text" placeholder="Ejemplo: ferxxito">
+
+    <small *ngIf="isInvalid('username', 'required')" class="error">
+      El nombre de usuario es obligatorio.
+    </small>
+
+    <small *ngIf="isInvalid('username', 'required')" class="error">
+      Ingrese un nombre de usuario válido.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="password">Contraseña</label>
+    <input formControlName="password" id="password" type="password" placeholder="********">
+
+    <small *ngIf="isInvalid('password', 'required')" class="error">
+      La contraseña es obligatoria.
+    </small>
+
+    <small *ngIf="isInvalid('password', 'minlength')" class="error">
+      La contraseña debe tener al menos 8 caracteres.
+    </small>
+
+    <small *ngIf="isInvalid('password', 'pattern')" class="error">
+      La contraseña debe tener al menos 1 mayúscula, 1 minúscula, un símbolo y un número.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="password">Confirmar Contraseña</label>
+    <input formControlName="passwordConfirm" id="passwordConfirm" type="password" placeholder="********">
+
+    <small *ngIf="isInvalid('passwordConfirm', 'required')" class="error">
+      La confirmación de contraseña es obligatoria.
+    </small>
+
+    <small *ngIf="isInvalid('passwordConfirm', 'minlength')" class="error">
+      La contraseña debe tener al menos 8 caracteres.
+    </small>
+
+    <small *ngIf="isInvalid('passwordConfirm', 'pattern')" class="error">
+      La contraseña debe tener al menos 1 mayúscula, 1 minúscula, un símbolo y un número.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="age">Edad</label>
+    <input formControlName="age" id="age" type="number" placeholder="18">
+
+    <small *ngIf="isInvalid('age', 'required')" class="error">
+      La edad es obligatoria.
+    </small>
+
+    <small *ngIf="isInvalid('age', 'min') || isInvalid('age', 'max')" class="error">
+      La edad debe estar entre 1 y 120 años.
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="age">Términos y condiciones</label>
+    <input formControlName="terminos" id="terminos" type="checkbox" placeholder="18">
+
+    <small *ngIf="isInvalid('terminos', 'required')" class="error">
+      Los términos y condiciones son obligatorios.
+    </small>
+  </div>
+
+  <button type="submit" (click)="onClick()" [disabled]="form.invalid">
+    Registrarse
+  </button>
+</form>
