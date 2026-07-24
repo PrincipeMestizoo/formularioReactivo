@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-register-form',
@@ -10,41 +16,56 @@ export class RegisterFormComponent {
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      name: [null, [Validators.required, Validators.minLength(2)]],
-      email: [null, [Validators.required, Validators.email]],
-      password: [
-        null,
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]).{8,32}/,
-          ),
+    this.form = this.fb.group(
+      {
+        name: [null, [Validators.required, Validators.minLength(3)]],
+        email: [null, [Validators.required, Validators.email]],
+        username: [
+          null,
+          [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]+$/)],
         ],
-      ],
-      age: [
-        null,
-        [Validators.required, Validators.min(1), Validators.max(120)],
-      ],
-      ficha: [{ value: null, disabled: true }, [Validators.required]],
-    });
-
-    this.form.get('email')!.valueChanges.subscribe({
-      next: (data: string) => {
-        if (data.includes('@sena')) {
-          this.form.get('ficha')!.enable();
-        } else {
-          this.form.get('ficha')!.disable();
-        }
+        password: [null, [Validators.required, Validators.minLength(8)]],
+        passwordConfirm: [null, [Validators.required]],
+        age: [
+          null,
+          [Validators.required, Validators.min(15), Validators.max(90)],
+        ],
+        terminos: [false, [Validators.requiredTrue]],
       },
-    });
+      {
+        validators: [this.mustMatch('password', 'passwordConfirm')],
+      },
+    );
+  }
+
+  mustMatch(controlName: string, matchingControlName: string) {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const control = formGroup.get(controlName);
+      const matchingControl = formGroup.get(matchingControlName);
+
+      if (!control || !matchingControl) {
+        return null;
+      }
+
+      if (matchingControl.errors && !matchingControl.errors['mustMatch']) {
+        return null;
+      }
+
+      if (control.value !== matchingControl.value) {
+        matchingControl.setErrors({ mustMatch: true });
+      } else {
+        matchingControl.setErrors(null);
+      }
+
+      return null;
+    };
   }
 
   onClick() {
     if (this.form.valid) {
-      console.log(this.form.value);
-      console.log(this.form.getRawValue());
+      console.log('Datos del formulario:', this.form.value);
+    } else {
+      this.form.markAllAsTouched();
     }
   }
 
@@ -55,8 +76,6 @@ export class RegisterFormComponent {
       return false;
     }
 
-    const touched = control.touched;
-
-    return control.hasError(errorCode) && touched;
+    return control.hasError(errorCode) && control.touched;
   }
 }
